@@ -8,6 +8,8 @@ class Field():
         self.bg_color = '\033[34m'
         self.text_color = '\033[33m'
         self.end_color = '\033[m'
+        self.error_color = '\033[31m'
+        self.success_color = '\033[32m'
         self.table = self.create_table()
 
     def create_table(self) -> list:
