@@ -18,3 +18,5 @@ field.render()
 
 score = Score()
 score.render()
+input('\033[34mATIRAR EM: \033[30;44m')
+print('\033[m')
