@@ -35,7 +35,7 @@ class Field():
             table.append(line)
         return table
 
-    def render_field(self) -> None:
+    def render(self) -> None:
         '''Render field.'''
         for line in self.table:
             print(''.join(line))

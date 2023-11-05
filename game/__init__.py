@@ -1,7 +1,7 @@
 import pandas as pd
 from os import system
 
-from models import Field
+from field import Field
 
 ships = {
     5 : {'C' : 'carrier'},
@@ -23,4 +23,4 @@ system('cls')
 #print(f'\033[33m{msg}\033[m')
 
 field = Field()
-field.render_field()
+field.render()
