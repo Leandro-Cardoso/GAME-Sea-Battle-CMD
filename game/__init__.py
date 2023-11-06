@@ -13,6 +13,8 @@ class Game():
         self.player = Player()
         self.bot = Player(name = 'Bot', is_bot = True)
         self.score = Score()
+        self.error_color = '\033[31m'
+        self.success_color = '\033[32m'
 
     def quit(self) -> None:
         '''Quit game.'''
@@ -54,6 +56,7 @@ class Game():
         self.is_running = True
         self.start()
         self.update()
+        print('\033[m')
 
 seabattle = Game()
 seabattle.run()
