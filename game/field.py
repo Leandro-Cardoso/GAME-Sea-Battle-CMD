@@ -8,30 +8,15 @@ class Field():
         self.lines = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
         self.bg_char = '+'
         self.ships = {
-            'carrier' : {
-                'code' : 'C',
-                'size' : 5
-            },
-            'battleship' : {
-                'code' : 'B',
-                'size' : 4
-            },
-            'submarine' : {
-                'code' : 'S',
-                'size' : 3
-            },
-            'destroyer' : {
-                'code' : 'D',
-                'size' : 2
-            },
-            'motorboat' : {
-                'code' : 'M',
-                'size' : 1
-            }
+            'carrier' : 5,
+            'battleship' : 4,
+            'submarine' : 3,
+            'destroyer' : 2,
+            'motorboat' : 1
         }
         self.bg_color = '\033[34m'
         self.text_color = '\033[33m'
-        self.ship_color = '\033[30m'
+        self.ship_color = '\033[37m'
         self.table = self.create_table()
 
     def is_field(self, position:str) -> bool:
@@ -45,22 +30,37 @@ class Field():
     def generate_ships(self) -> None:
         '''Generate ships'''
         # SHIP TYPE:
-        for i in range(list(self.ships)):
-            ship = self.ships[i]
+        for i, ship_name in enumerate(self.ships):
+            size = self.ships[ship_name]
             # SHIP NUMBER:
             n_ship = i + 1
             for n in range(n_ship):
-                # SET POSITION:
+                # VERIFY SET POSITION:
                 is_set_ship_position = False
                 while not is_set_ship_position:
-                    position = choice(self.columns) + choice(self.lines)
+                    column = choice(self.columns)
+                    line = choice(self.lines)
                     orientation = choice(['vertical', 'horizontal'])
-                    for j in range(ship['size']):
-                        # VERIFICAR SE CABE O NAVIO (OPERAÇÕES COM CONDICIONAIS)...
-                        pass
-                for j in range(ship['size']):
-                    # SETAR POSIÇÕES...
-                    pass
+                    i_column = self.columns.index(column) + 1
+                    i_line = self.lines.index(line) + 1
+                    is_set_ship_position = True
+                    for j in range(size):
+                        try:
+                            if orientation == 'vertical':
+                                if self.bg_char not in str(self.table[i_line + j][i_column]):
+                                    is_set_ship_position = False
+                            else:
+                                if self.bg_char not in str(self.table[i_line][i_column + j]):
+                                    is_set_ship_position = False
+                        except:
+                            is_set_ship_position = False
+                # SET POSITION:
+                for j in range(size):
+                    replace = self.ship_color + str(self.ships[ship_name])
+                    if orientation == 'vertical':
+                        self.table[i_line + j][i_column] = str(self.table[i_line + j][i_column]).replace(self.bg_char, replace)
+                    else:
+                        self.table[i_line][i_column + j] = str(self.table[i_line][i_column + j]).replace(self.bg_char, replace)
 
     def create_table(self) -> list:
         '''Create table.'''

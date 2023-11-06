@@ -37,6 +37,7 @@ class Game():
         self.score = Score(player_name = self.player.name, bot_name = self.bot.name)
 
         # TESTS: (temp)
+        self.player.hits_map.generate_ships()
         self.player.hits_map.render()
         self.score.render()
         self.is_running = False
