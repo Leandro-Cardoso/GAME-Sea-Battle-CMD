@@ -1,9 +1,9 @@
 class Score():
     '''Create score board.'''
-    def __init__(self, player_name:str = 'Player') -> None:
+    def __init__(self, player_name:str = 'Player', bot_name:str = 'Bot') -> None:
         self.total_hits = 35 # (1 * 5) + (2 * 4) + (3 * 3) + (4 * 2) + (5 * 1)
         self.player_name = player_name
-        self.bot_name = 'Bot'
+        self.bot_name = bot_name
         self.player_life = 100
         self.bot_life = 100
         self.player_score = 0
@@ -33,6 +33,13 @@ class Score():
                 self.bot_life = 0
                 self.player_score += 1
 
+    def reset(self) -> None:
+        '''Reset scores.'''
+        self.player_life = 100
+        self.bot_life = 100
+        self.player_score = 0
+        self.bot_score = 0
+        self.turn = self.player_name
 
     def render(self) -> None:
         '''Render score board.'''
