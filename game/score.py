@@ -10,7 +10,6 @@ class Score():
         self.bot_score = 0
         self.turn = self.player_name
         self.text_color = '\033[33m'
-        self.end_color = '\033[m'
 
     def change_turn(self) -> None:
         '''Change turn.'''
@@ -53,4 +52,4 @@ class Score():
         print(f'{player_life:<15} | Vida: {int(self.bot_life)} %')
         player_score = f'Pontos: {self.player_score}'
         print(f'{player_score:<15} | Pontos: {self.bot_score}')
-        print('=' * 32 + self.end_color)
+        print('=' * 32)
