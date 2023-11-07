@@ -21,6 +21,8 @@ class Game():
 
     def render_title(self) -> None:
         '''Render title and subtitles.'''
+        # RESET SCREEN:
+        system('cls')
         # TITLE:
         print(self.text_color + '=' * 69)
         n_simbols = 3
@@ -49,15 +51,43 @@ class Game():
 
     def render_intro(self) -> None:
         '''Render intro and get player name.'''
+        # TITLE AND DESCRIPTION:
         self.render_title()
         print(GAME_DESCRIPTION)
         print('=' * 69)
+        # PLAYER NAME:
         self.player.name = input('\033[34mNOME DO JOGADOR: \033[30;44m')
         print('\033[m')
 
-    def render_map_generation(self) -> None:
+    def render_map_generator(self) -> None:
         '''Render player map generation.'''
-        pass
+        error = ''
+        is_selected = False
+        while not is_selected:
+            # MAP AND OPTIONS:
+            self.render_title()
+            self.player.ships_map.render()
+            print(self.text_color + '=' * 69)
+            print(' 1 - Iniciar jogo')
+            print(' 2 - Reposicionar navios')
+            print('=' * 69)
+            # RENDER ERROR:
+            if error != '':
+                error = self.error_color + 'ERRO: ' + error
+                print(f'{error:^69}')
+                print(self.text_color + '=' * 69)
+            # VERIFY OPTION:
+            option = input('\033[34mDIGITE O NUMERO DA OPÇÃO: \033[30;44m')
+            print('\033[m')
+            if option == '1':
+                is_selected = True
+                error = ''
+            elif option == '2':
+                self.player.ships_map.table = self.player.ships_map.create_table()
+                self.player.ships_map.generate_ships()
+                error = ''
+            else:
+                error = 'Digite apenas o numero da opção escolhida.'
 
     def render_maps(self) -> None:
         '''Render maps.'''
@@ -77,14 +107,13 @@ class Game():
         self.player.ships_map.generate_ships()
         # INTRO:
         self.render_intro()
-        system('cls')
-
+        # MAP GENERATOR:
+        self.render_map_generator()
         # CREATE BOT:
         self.bot = Player(name = 'Bot', is_bot = True)
         self.bot.hits_map = Field()
         self.bot.ships_map = Field()
         self.bot.ships_map.generate_ships()
-
         # CREATE SCORE BOARD:
         self.score = Score(player_name = self.player.name, bot_name = self.bot.name)
 
@@ -97,9 +126,6 @@ class Game():
     def update(self) -> None:
         '''While game is running.'''
         while self.is_running:
-            # CLEAR CMD:
-            system('cls')
-
             # QUIT GAME:
             if str(self.command).lower() in self.quit_game_commands:
                 self.is_running = False
