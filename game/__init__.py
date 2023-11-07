@@ -4,6 +4,8 @@ from field import Field
 from score import Score
 from player import Player
 
+from config import GAME_TITLE, GAME_DESCRIPTION
+
 class Game():
     '''Create game file.'''
     def __init__(self) -> None:
@@ -23,9 +25,8 @@ class Game():
         print(self.text_color + '=' * 69)
         n_simbols = 3
         simbol_l = '>' * n_simbols
-        title = 'BATALHA NAVAL'
         simbol_r = '<' * n_simbols
-        print(f'{simbol_l:<10}{title:^49}{simbol_r:>10}')
+        print(f'{simbol_l:<10}{GAME_TITLE:^49}{simbol_r:>10}')
         print('=' * 69)
         # SUBTITLES:
         simbol = '|'
@@ -46,6 +47,18 @@ class Game():
         print(f'{n_motorboat:>34}{simbol}  {motorboat}')
         print('=' * 69)
 
+    def render_intro(self) -> None:
+        '''Render intro and get player name.'''
+        self.render_title()
+        print(GAME_DESCRIPTION)
+        print('=' * 69)
+        self.player.name = input('\033[34mNOME DO JOGADOR: \033[30;44m')
+        print('\033[m')
+
+    def render_map_generation(self) -> None:
+        '''Render player map generation.'''
+        pass
+
     def render_maps(self) -> None:
         '''Render maps.'''
         for i, line in enumerate(self.player.ships_map.table):
@@ -59,10 +72,12 @@ class Game():
         '''Start game.'''
         # CREATE PLAYER:
         self.player = Player()
-        self.player.name = input('Qual o seu nome? ')
         self.player.hits_map = Field()
         self.player.ships_map = Field()
         self.player.ships_map.generate_ships()
+        # INTRO:
+        self.render_intro()
+        system('cls')
 
         # CREATE BOT:
         self.bot = Player(name = 'Bot', is_bot = True)
@@ -98,5 +113,3 @@ class Game():
 
 seabattle = Game()
 seabattle.run()
-
-#input('\033[34mATIRAR EM: \033[30;44m')
