@@ -17,8 +17,18 @@ class Game():
         self.error_color = '\033[31m'
         self.success_color = '\033[32m'
 
+    def render_title(self) -> None:
+        '''Render title and subtitles.'''
+        print(self.text_color + '=' * 69)
+        n_simbols = 3
+        simbol_l = '>' * n_simbols
+        title = 'BATALHA NAVAL'
+        simbol_r = '<' * n_simbols
+        print(f'{simbol_l:<10}{title:^49}{simbol_r:>10}')
+        print('=' * 69)
+
     def render_maps(self) -> None:
-        '''Render maps'''
+        '''Render maps.'''
         for i, line in enumerate(self.player.ships_map.table):
             print(''.join(line) + self.text_color + '|' + (' ' * 2) + ''.join(self.player.hits_map.table[i]))
 
@@ -45,7 +55,7 @@ class Game():
         self.score = Score(player_name = self.player.name, bot_name = self.bot.name)
 
         # TESTS: (temp)
-        #self.player.ships_map.render()
+        self.render_title()
         self.render_maps()
         self.score.render()
         self.is_running = False
