@@ -19,12 +19,31 @@ class Game():
 
     def render_title(self) -> None:
         '''Render title and subtitles.'''
+        # TITLE:
         print(self.text_color + '=' * 69)
         n_simbols = 3
         simbol_l = '>' * n_simbols
         title = 'BATALHA NAVAL'
         simbol_r = '<' * n_simbols
         print(f'{simbol_l:<10}{title:^49}{simbol_r:>10}')
+        print('=' * 69)
+        # SUBTITLES:
+        simbol = '|'
+        carrier = 'Porta-Aviões'
+        n_carrier = ('5' + ' ' * 2) * 5
+        print(f'{n_carrier:>34}{simbol}  {carrier}')
+        battleship = 'Battleship'
+        n_battleship = ('4' + ' ' * 2) * 4
+        print(f'{n_battleship:>34}{simbol}  {battleship}')
+        submarine = 'Submarino'
+        n_submarine = ('3' + ' ' * 2) * 3
+        print(f'{n_submarine:>34}{simbol}  {submarine}')
+        destroyer = 'Destroyer'
+        n_destroyer = ('2' + ' ' * 2) * 2
+        print(f'{n_destroyer:>34}{simbol}  {destroyer}')
+        motorboat = 'Lancha'
+        n_motorboat = '1' + ' ' * 2
+        print(f'{n_motorboat:>34}{simbol}  {motorboat}')
         print('=' * 69)
 
     def render_maps(self) -> None:
