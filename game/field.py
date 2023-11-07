@@ -6,7 +6,7 @@ class Field():
         self.col_space = col_space
         self.columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
         self.lines = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
-        self.bg_char = '+'
+        self.bg_char = '-'
         self.ships = {
             'carrier' : 5,
             'battleship' : 4,
@@ -18,14 +18,6 @@ class Field():
         self.text_color = '\033[33m'
         self.ship_color = '\033[37m'
         self.table = self.create_table()
-
-    def is_field(self, position:str) -> bool:
-        '''Is field?'''
-        pass
-
-    def is_ship(self, position:str) -> bool:
-        '''Is ship?'''
-        pass
 
     def generate_ships(self) -> None:
         '''Generate ships'''
@@ -89,4 +81,3 @@ class Field():
         '''Render field.'''
         for line in self.table:
             print(''.join(line))
-        print('')

@@ -42,14 +42,16 @@ class Score():
 
     def render(self) -> None:
         '''Render score board.'''
-        print(self.text_color + '=' * 32)
-        turn = f'É a vez de {self.turn}...'
-        print(f'{turn:^32}')
-        print(self.text_color + '=' * 32)
+        # SCORES:
+        print(self.text_color + '=' * 69)
         player_name = f'Nome: {self.player_name}'
-        print(f'{player_name:<15} | Nome: {self.bot_name}')
+        print(f'{player_name:<33} | Nome: {self.bot_name}')
         player_life = f'Vida: {int(self.player_life)} %'
-        print(f'{player_life:<15} | Vida: {int(self.bot_life)} %')
+        print(f'{player_life:<33} | Vida: {int(self.bot_life)} %')
         player_score = f'Pontos: {self.player_score}'
-        print(f'{player_score:<15} | Pontos: {self.bot_score}')
-        print('=' * 32)
+        print(f'{player_score:<33} | Pontos: {self.bot_score}')
+        print('=' * 69)
+        # TURN:
+        turn = f'É a vez de {self.turn}...'
+        print(f'{turn:^69}')
+        print('=' * 69)

@@ -13,8 +13,14 @@ class Game():
         self.player = Player()
         self.bot = Player(name = 'Bot', is_bot = True)
         self.score = Score()
+        self.text_color = '\033[33m'
         self.error_color = '\033[31m'
         self.success_color = '\033[32m'
+
+    def render_maps(self) -> None:
+        '''Render maps'''
+        for i, line in enumerate(self.player.ships_map.table):
+            print(''.join(line) + self.text_color + '|' + (' ' * 2) + ''.join(self.player.hits_map.table[i]))
 
     def quit(self) -> None:
         '''Quit game.'''
@@ -27,18 +33,20 @@ class Game():
         self.player.name = input('Qual o seu nome? ')
         self.player.hits_map = Field()
         self.player.ships_map = Field()
+        self.player.ships_map.generate_ships()
 
         # CREATE BOT:
         self.bot = Player(name = 'Bot', is_bot = True)
         self.bot.hits_map = Field()
         self.bot.ships_map = Field()
+        self.bot.ships_map.generate_ships()
 
         # CREATE SCORE BOARD:
         self.score = Score(player_name = self.player.name, bot_name = self.bot.name)
 
         # TESTS: (temp)
-        self.player.hits_map.generate_ships()
-        self.player.hits_map.render()
+        #self.player.ships_map.render()
+        self.render_maps()
         self.score.render()
         self.is_running = False
 
