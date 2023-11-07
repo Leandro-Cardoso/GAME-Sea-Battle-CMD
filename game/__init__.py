@@ -9,9 +9,6 @@ from config import GAME_TITLE, GAME_DESCRIPTION
 class Game():
     '''Create game file.'''
     def __init__(self) -> None:
-        self.is_running = False
-        self.command = None
-        self.quit_game_commands = ['quit', 'sair', '0']
         self.player = Player()
         self.bot = Player(name = 'Bot', is_bot = True)
         self.score = Score()
@@ -98,8 +95,8 @@ class Game():
         '''Quit game.'''
         self.is_running = False
 
-    def start(self) -> None:
-        '''Start game.'''
+    def run(self) -> None:
+        '''Run game.'''
         # CREATE PLAYER:
         self.player = Player()
         self.player.hits_map = Field()
@@ -116,25 +113,20 @@ class Game():
         self.bot.ships_map.generate_ships()
         # CREATE SCORE BOARD:
         self.score = Score(player_name = self.player.name, bot_name = self.bot.name)
+        # Enquanto o jogo não terminar:
+        # Variar entre turno do player e do bot.
+        # Tela de vitória.
+        # Tela de derrota.
+
+        # Adicionar comando para sair do jogo.
+        # Adicionar efeitos sonoros.
+        # Adicionar trilha sonora (função asinc).
 
         # TESTS: (temp)
         self.render_title()
         self.render_maps()
         self.score.render()
-        self.is_running = False
-
-    def update(self) -> None:
-        '''While game is running.'''
-        while self.is_running:
-            # QUIT GAME:
-            if str(self.command).lower() in self.quit_game_commands:
-                self.is_running = False
-    
-    def run(self) -> None:
-        '''Run game.'''
-        self.is_running = True
-        self.start()
-        self.update()
+        # RESET COLORS:
         print('\033[m')
 
 seabattle = Game()
