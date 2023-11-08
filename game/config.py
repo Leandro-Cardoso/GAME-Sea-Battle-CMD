@@ -19,3 +19,12 @@ Os numeros também representam o tamanho deles, como uma dica.
 O "Battleship" por exemplo tem 4 espaços de tamanho.
 Ex: "4  4  4  4" <- Sendo essa a sua representação.
 Mais informações na legenda acima.'''
+
+# COLORS:
+COLOR_RESET = '\033[m' # reset
+COLOR_SUCCESS = '\033[32m' # green
+COLOR_FAIL = '\033[31m' # red
+COLOR_TEXT = '\033[33m' # yellow
+COLOR_INPUT = '\033[30;44m' # bg blue
+COLOR_WATER = '\033[34m' # blue
+COLOR_SHIP = '\033[37m' # white

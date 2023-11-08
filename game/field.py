@@ -1,12 +1,15 @@
 from random import choice
 
+from config import COLOR_TEXT, COLOR_WATER, COLOR_SHIP, COLOR_FAIL
+
 class Field():
     '''Create game field.'''
     def __init__(self, col_space:int = 2) -> None:
         self.col_space = col_space
         self.columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
         self.lines = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
-        self.bg_char = '-'
+        self.bg_char = COLOR_WATER + '-'
+        self.bg_char_water = COLOR_FAIL + 'X'
         self.ships = {
             'carrier' : 5,
             'battleship' : 4,
@@ -14,10 +17,17 @@ class Field():
             'destroyer' : 2,
             'motorboat' : 1
         }
-        self.bg_color = '\033[34m'
-        self.text_color = '\033[33m'
-        self.ship_color = '\033[37m'
         self.table = self.create_table()
+
+    def shot(self, shot:str) -> str:
+        '''Shot.'''
+        i_column = self.columns.index(shot[0]) + 1
+        if len(shot) == 2:
+            i_line = self.lines.index(shot[1]) + 1
+        else:
+            i_line = self.lines.index(shot[1] + shot[2]) + 1
+        if self.table[i_column][i_line] == self.bg_char:
+            return self.bg_char_water
 
     def generate_ships(self) -> None:
         '''Generate ships'''
@@ -48,7 +58,7 @@ class Field():
                             is_set_ship_position = False
                 # SET POSITION:
                 for j in range(size):
-                    replace = self.ship_color + str(self.ships[ship_name])
+                    replace = COLOR_SHIP + str(self.ships[ship_name])
                     if orientation == 'vertical':
                         self.table[i_line + j][i_column] = str(self.table[i_line + j][i_column]).replace(self.bg_char, replace)
                     else:
@@ -64,16 +74,16 @@ class Field():
                     line.append(' ' * (2 + self.col_space))
                 # LETTERS:
                 elif l == 0 and c != 0:
-                    line.append(self.text_color + self.columns[c - 1] + ' ' * self.col_space)
+                    line.append(COLOR_TEXT + self.columns[c - 1] + ' ' * self.col_space)
                 # NUMBERS:
                 elif l != 0 and c == 0:
                     if l == 10:
-                        line.append(self.text_color + self.lines[l - 1] + ' ' * self.col_space)
+                        line.append(COLOR_TEXT + self.lines[l - 1] + ' ' * self.col_space)
                     else:
-                        line.append(self.text_color + self.lines[l - 1] + ' ' * (1 + self.col_space))
+                        line.append(COLOR_TEXT + self.lines[l - 1] + ' ' * (1 + self.col_space))
                 # FIELD:
                 else:
-                    line.append(self.bg_color + self.bg_char + ' ' * self.col_space)
+                    line.append(self.bg_char + ' ' * self.col_space)
             table.append(line)
         return table
 

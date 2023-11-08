@@ -1,3 +1,5 @@
+from config import COLOR_TEXT
+
 class Score():
     '''Create score board.'''
     def __init__(self, player_name:str = 'Player', bot_name:str = 'Bot') -> None:
@@ -9,7 +11,6 @@ class Score():
         self.player_score = 0
         self.bot_score = 0
         self.turn = self.player_name
-        self.text_color = '\033[33m'
 
     def change_turn(self) -> None:
         '''Change turn.'''
@@ -43,7 +44,7 @@ class Score():
     def render(self) -> None:
         '''Render score board.'''
         # SCORES:
-        print(self.text_color + '=' * 69)
+        print(COLOR_TEXT + '=' * 69)
         player_name = f'Nome: {self.player_name}'
         print(f'{player_name:<33} | Nome: {self.bot_name}')
         player_life = f'Vida: {int(self.player_life)} %'

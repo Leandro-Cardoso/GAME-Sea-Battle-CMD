@@ -6,6 +6,7 @@ from score import Score
 from player import Player
 
 from config import GAME_TITLE, GAME_DESCRIPTION
+from config import COLOR_TEXT, COLOR_FAIL
 
 class Game():
     '''Create game file.'''
@@ -14,16 +15,13 @@ class Game():
         self.player = Player()
         self.bot = Player(name = 'Bot', is_bot = True)
         self.score = Score()
-        self.text_color = '\033[33m'
-        self.error_color = '\033[31m'
-        self.success_color = '\033[32m'
 
     def render_title(self) -> None:
         '''Render title and subtitles.'''
         # RESET SCREEN:
         system('cls')
         # TITLE:
-        print(self.text_color + '=' * 69)
+        print(COLOR_TEXT + '=' * 69)
         n_simbols = 3
         simbol_l = '>' * n_simbols
         simbol_r = '<' * n_simbols
@@ -66,16 +64,16 @@ class Game():
             # MAP AND OPTIONS:
             self.render_title()
             self.player.ships_map.render()
-            print(self.text_color + '=' * 69)
+            print(COLOR_TEXT + '=' * 69)
             print(' 1 - Iniciar jogo')
             print(' 2 - Reposicionar navios')
             print(' 3 - Sair do jogo')
             print('=' * 69)
             # RENDER ERROR:
             if error != '':
-                error = self.error_color + 'ERRO: ' + error
+                error = COLOR_FAIL + 'ERRO: ' + error
                 print(f'{error:^69}')
-                print(self.text_color + '=' * 69)
+                print(COLOR_TEXT + '=' * 69)
             # VERIFY OPTION:
             option = input('\033[34mDIGITE O NUMERO DA OPÇÃO: \033[30;44m')
             print('\033[m')
@@ -95,7 +93,7 @@ class Game():
     def render_maps(self) -> None:
         '''Render maps.'''
         for i, line in enumerate(self.player.ships_map.table):
-            print(''.join(line) + self.text_color + '|' + (' ' * 2) + ''.join(self.player.hits_map.table[i]))
+            print(''.join(line) + COLOR_TEXT + '|' + (' ' * 2) + ''.join(self.player.hits_map.table[i]))
 
     def run(self) -> None:
         '''Run game.'''
@@ -127,9 +125,9 @@ class Game():
             if self.score.turn == self.player.name:
                 # RENDER ERROR:
                 if error != '':
-                    error = self.error_color + 'ERRO: ' + error
+                    error = COLOR_FAIL + 'ERRO: ' + error
                     print(f'{error:^69}')
-                # SHOT:
+                # VALIDATE SHOT:
                 shot = input('\033[34mDIGITE O ALVO DO DISPARO: \033[30;44m')
                 print('\033[m')
                 shot = shot.upper()
@@ -140,6 +138,7 @@ class Game():
                     else:
                         shot = shot[1] + shot[0]
                 if shot[0] in self.player.hits_map.columns and shot[1] in self.player.hits_map.lines and len(shot) == 2 or len(shot) == 3 and shot[1] + shot[2] == '10':
+                    # ADD TO SHOTS LIST:
                     if shot not in self.player.shots:
                         self.player.shots.append(shot)
                     # Realizar disparo.
@@ -149,22 +148,23 @@ class Game():
                     error = 'Responda apenas com uma letra e um numero.'
             # BOT TURN:
             else:
-                # SHOT:
+                # VALIDATE SHOT:
                 is_valid_shot = False
                 while not is_valid_shot:
                     column = choice(self.bot.hits_map.columns)
                     line = choice(self.bot.hits_map.lines)
                     shot = column + line
+                    # ADD TO SHOTS LIST:
                     if shot not in self.bot.shots:
                         self.bot.shots.append(shot)
                         is_valid_shot = True
-                # Realizar disparo.
+                # SHOT:
             # CHANGE TURN:
             self.score.change_turn()
             # Verificar vitória ou derrota.
             # Tela de vitória.
             # Tela de derrota (pegar som de derrota).
-            # Continuar ou não.
+            # /\ Com opção continuar ou não.
 
         # Adicionar efeitos sonoros.
         # Adicionar trilha sonora (função asinc).
