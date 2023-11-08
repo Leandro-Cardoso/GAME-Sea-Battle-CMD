@@ -122,25 +122,32 @@ class Game():
             self.render_title()
             self.render_maps()
             self.score.render()
-            # RENDER ERROR:
-            if error != '':
-                error = self.error_color + 'ERRO: ' + error
-                print(f'{error:^69}')
-            # SHOT:
-            shot = input('\033[34mDIGITE O ALVO DO DISPARO: \033[30;44m')
-            print('\033[m')
-            shot = shot.upper()
-            shot = shot.replace(' ', '')
-            if shot[0] in self.player.hits_map.lines and shot[1] in self.player.hits_map.columns:
-                shot = shot[1] + shot[0]
-            if shot[0] in self.player.hits_map.columns and shot[1] in self.player.hits_map.lines:
-                print(shot)
-                self.is_running = False
+            # PLAYER TURN:
+            if self.score.turn == self.player.name:
+                # RENDER ERROR:
+                if error != '':
+                    error = self.error_color + 'ERRO: ' + error
+                    print(f'{error:^69}')
+                # SHOT:
+                shot = input('\033[34mDIGITE O ALVO DO DISPARO: \033[30;44m')
+                print('\033[m')
+                shot = shot.upper()
+                shot = shot.replace(' ', '')
+                if shot[0] in self.player.hits_map.lines and shot[1] in self.player.hits_map.columns:
+                    shot = shot[1] + shot[0]
+                if shot[0] in self.player.hits_map.columns and shot[1] in self.player.hits_map.lines:
+                    print(shot) # temp
+                    self.is_running = False # temp
+                    # Realizar disparo.
+                else:
+                    error = 'Responda apenas com uma letra e um numero.'
+            # BOT TURN:
             else:
-                error = 'Responda apenas com uma letra e um numero.'
-            # Realizar disparo.
+                # Realizar disparo.
+                pass
+            # CHANGE TURN:
+            self.score.change_turn()
             # Verificar vitória ou derrota.
-            # Variar entre turno do player e do bot.
             # Tela de vitória.
             # Tela de derrota (pegar som de derrota).
             # Continuar ou não.
