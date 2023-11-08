@@ -1,4 +1,5 @@
 from os import system
+from random import choice
 
 from field import Field
 from score import Score
@@ -133,18 +134,31 @@ class Game():
                 print('\033[m')
                 shot = shot.upper()
                 shot = shot.replace(' ', '')
-                if shot[0] in self.player.hits_map.lines and shot[1] in self.player.hits_map.columns:
-                    shot = shot[1] + shot[0]
-                if shot[0] in self.player.hits_map.columns and shot[1] in self.player.hits_map.lines:
-                    print(shot) # temp
-                    self.is_running = False # temp
+                if shot[0] in self.player.hits_map.lines:
+                    if len(shot) == 3 and shot[0] + shot[1] == '10':
+                        shot = shot[2] + shot[0] + shot[1]
+                    else:
+                        shot = shot[1] + shot[0]
+                if shot[0] in self.player.hits_map.columns and shot[1] in self.player.hits_map.lines and len(shot) == 2 or len(shot) == 3 and shot[1] + shot[2] == '10':
+                    if shot not in self.player.shots:
+                        self.player.shots.append(shot)
                     # Realizar disparo.
+                elif shot == '0':
+                    self.is_running = False
                 else:
                     error = 'Responda apenas com uma letra e um numero.'
             # BOT TURN:
             else:
+                # SHOT:
+                is_valid_shot = False
+                while not is_valid_shot:
+                    column = choice(self.bot.hits_map.columns)
+                    line = choice(self.bot.hits_map.lines)
+                    shot = column + line
+                    if shot not in self.bot.shots:
+                        self.bot.shots.append(shot)
+                        is_valid_shot = True
                 # Realizar disparo.
-                pass
             # CHANGE TURN:
             self.score.change_turn()
             # Verificar vitória ou derrota.

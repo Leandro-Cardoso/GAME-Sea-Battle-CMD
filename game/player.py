@@ -5,6 +5,7 @@ class Player():
         self.is_bot = is_bot
         self.ships_map = None
         self.hits_map = None
+        self.shots = []
     
     def reset_maps(self) -> None:
         '''Reset game maps.'''
