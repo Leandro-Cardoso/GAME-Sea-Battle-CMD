@@ -5,7 +5,7 @@ from field import Field
 from score import Score
 from player import Player
 
-from config import GAME_TITLE, GAME_DESCRIPTION
+from config import GAME_TITLE, GAME_DESCRIPTION, GAME_SFX_PATH
 from config import COLOR_TEXT, COLOR_WATER, COLOR_INPUT, COLOR_RESET, COLOR_FAIL, COLOR_SUCCESS
 
 class Game():
@@ -305,6 +305,7 @@ class Game():
         # Adicionar efeitos sonoros.
         # Adicionar trilha sonora (função asinc).
         # Criar executável.
+        # Finalizar README.
 
         # RESET COLORS:
         print(COLOR_RESET)

@@ -1,3 +1,5 @@
+from os import path
+
 # PYTHON VERSION:
 GAME_PYTHON_VERSION = '3.7.9'
 
@@ -19,6 +21,9 @@ Os numeros também representam o tamanho deles, como uma dica.
 O "Battleship" por exemplo tem 4 espaços de tamanho.
 Ex: "4  4  4  4" <- Sendo essa a sua representação.
 Mais informações na legenda acima.'''
+
+# GAME PATHS:
+GAME_SFX_PATH = path.abspath('.\game\sfx') + '\\'
 
 # COLORS:
 COLOR_RESET = '\033[m' # reset
