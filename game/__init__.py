@@ -1,5 +1,7 @@
 from os import system
 from random import choice
+import pygame
+from time import sleep
 
 from field import Field
 from score import Score
@@ -15,6 +17,12 @@ class Game():
         self.player = Player()
         self.bot = Player(name = 'Bot', is_bot = True)
         self.score = Score()
+        self.sfx_success = pygame.mixer.Sound(GAME_SFX_PATH + 'success-8-bit.wav')
+        self.sfx_error = pygame.mixer.Sound(GAME_SFX_PATH + 'error-8-bit.wav')
+        self.sfx_hit_water = pygame.mixer.Sound(GAME_SFX_PATH + 'water-8-bit.mp3')
+        self.sfx_hit_ship = pygame.mixer.Sound(GAME_SFX_PATH + 'short-explosion-8-bit.wav')
+        self.sfx_victory = pygame.mixer.Sound(GAME_SFX_PATH + 'stage-clear-8-bit.wav')
+        self.sfx_defeat = pygame.mixer.Sound(GAME_SFX_PATH + 'game-over-8-bit.wav')
 
     def render_title(self) -> None:
         '''Render title and subtitles.'''
@@ -58,6 +66,7 @@ class Game():
         # PLAYER NAME:
         self.player.name = input(COLOR_WATER + 'NOME DO JOGADOR: ' + COLOR_INPUT)
         print(COLOR_RESET)
+        self.sfx_success.play()
 
     def render_map_generator(self) -> None:
         '''Render player map generation.'''
@@ -86,16 +95,19 @@ class Game():
             if option == '1':
                 is_selected = True
                 error = ''
+                self.sfx_success.play()
             elif option == '2':
                 self.player.ships_map.table = self.player.ships_map.create_table()
                 self.player.ships_map.generate_ships()
                 error = ''
+                self.sfx_success.play()
             elif option == '3':
                 self.is_running = False
                 is_selected = True
                 error = ''
             else:
                 error = 'Digite apenas o numero da opção escolhida.'
+                self.sfx_error.play()
 
     def render_maps(self) -> None:
         '''Render maps.'''
@@ -107,7 +119,7 @@ class Game():
         # RESET SCORE BOARD:
         self.score.player_life = 100
         self.score.bot_life = 100
-        self.score.turn = self.score.player_name
+        self.score.turn = self.player.name
         # RESET PLAYER FIELD:
         self.player.hits_map = Field()
         self.player.ships_map = Field()
@@ -120,8 +132,9 @@ class Game():
     def render_victory(self) -> None:
         '''Render victory.'''
         error = ''
-        is_selected = False
-        while not is_selected:
+        pygame.mixer.music.set_volume(.2)
+        self.sfx_victory.play()
+        while True:
             # RENDER TITLE:
             self.render_title()
             # RENDER VICTORY MSG:
@@ -146,21 +159,25 @@ class Game():
             print(COLOR_RESET)
             option = option.replace(' ', '')
             if option == '1':
-                self.new_game()
-                is_selected = True
                 error = ''
+                self.new_game()
+                pygame.mixer.music.set_volume(1)
+                self.sfx_success.play()
+                break
             elif option == '2':
                 self.is_running = False
-                is_selected = True
                 error = ''
+                break
             else:
                 error = 'Digite apenas o numero da opção escolhida.'
+                self.sfx_error.play()
 
     def render_defeat(self) -> None:
         '''Render defeat.'''
         error = ''
-        is_selected = False
-        while not is_selected:
+        pygame.mixer.music.set_volume(.2)
+        self.sfx_defeat.play()
+        while True:
             # RENDER TITLE:
             self.render_title()
             # RENDER DEFEAT MSG:
@@ -185,15 +202,18 @@ class Game():
             print(COLOR_RESET)
             option = option.replace(' ', '')
             if option == '1':
-                self.new_game()
-                is_selected = True
                 error = ''
+                self.new_game()
+                pygame.mixer.music.set_volume(1)
+                self.sfx_success.play()
+                break
             elif option == '2':
                 self.is_running = False
-                is_selected = True
                 error = ''
+                break
             else:
                 error = 'Digite apenas o numero da opção escolhida.'
+                self.sfx_error.play()
 
     def run(self) -> None:
         '''Run game.'''
@@ -218,6 +238,9 @@ class Game():
         player_feedback = ''
         bot_feedback = ''
         error = ''
+        # START MUSIC:
+        pygame.mixer.music.set_volume(1)
+        pygame.mixer.music.play(loops = -1)
         while self.is_running:
             # RENDER:
             self.render_title()
@@ -249,7 +272,14 @@ class Game():
                     else:
                         shot = shot[1] + shot[0]
                 if len(shot) == 1:
-                    error = 'Responda apenas com uma letra e um numero.'
+                    # QUIT GAME:
+                    if shot == '0':
+                        self.is_running = False
+                        error = ''
+                    # ERROR:
+                    else:
+                        error = 'Responda apenas com uma letra e um numero.'
+                        self.sfx_error.play()
                 elif shot[0] in self.player.hits_map.columns and shot[1] in self.player.hits_map.lines and len(shot) == 2 or len(shot) == 3 and shot[1] + shot[2] == '10':
                     # SHOT:
                     target_content = self.bot.ships_map.create_target_content(shot)
@@ -259,15 +289,18 @@ class Game():
                             self.score.hit(self.bot.name)
                         # FEEDBACK:
                         player_feedback = f'{COLOR_SUCCESS}{self.player.name}: {shot} - Acertou um navio !!!'
+                        self.sfx_hit_ship.play()
+                        sleep(1)
                     else:
                         player_feedback = f'{COLOR_TEXT}{self.player.name}: {shot} - Errou o alvo !!!'
+                        self.sfx_hit_water.play()
+                        sleep(1)
                     # ADD TO SHOTS LIST:
                     if shot not in self.player.shots:
                         self.player.shots.append(shot)
-                elif shot == '0':
-                    self.is_running = False
                 else:
                     error = 'Responda apenas com uma letra e um numero.'
+                    self.sfx_error.play()
             # BOT TURN:
             else:
                 # VALIDATE SHOT:
@@ -287,8 +320,10 @@ class Game():
                         self.score.hit(self.player.name)
                     # FEEDBACK:
                     bot_feedback = f'{COLOR_FAIL}{self.bot.name}: {shot} - Acertou um navio !!!'
+                    self.sfx_hit_ship.play()
                 else:
                     bot_feedback = f'{COLOR_TEXT}{self.bot.name}: {shot} - Errou o alvo !!!'
+                    self.sfx_hit_water.play()
                 # ADD TO SHOTS LIST:
                 self.bot.shots.append(shot)
             # CHANGE TURN:
@@ -301,14 +336,13 @@ class Game():
             elif self.score.player_life == 0:
                 self.render_defeat()
 
-        # Pegar som de derrota.
-        # Adicionar efeitos sonoros.
-        # Adicionar trilha sonora (função asinc).
         # Criar executável.
         # Finalizar README.
 
         # RESET COLORS:
         print(COLOR_RESET)
 
+pygame.init() # Music and SFX
+pygame.mixer.music.load(GAME_SFX_PATH + 'music-loop-8-bit.wav')
 seabattle = Game()
 seabattle.run()
