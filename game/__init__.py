@@ -6,7 +6,7 @@ from score import Score
 from player import Player
 
 from config import GAME_TITLE, GAME_DESCRIPTION
-from config import COLOR_TEXT, COLOR_FAIL
+from config import COLOR_TEXT, COLOR_WATER, COLOR_INPUT, COLOR_RESET, COLOR_FAIL
 
 class Game():
     '''Create game file.'''
@@ -27,21 +27,23 @@ class Game():
         simbol_r = '<' * n_simbols
         print(f'{simbol_l:<10}{GAME_TITLE:^49}{simbol_r:>10}')
         print('=' * 69)
-        # SUBTITLES:
+
+    def render_subtitles(self) -> None:
+        '''Render subtitles.'''
         simbol = '|'
-        carrier = 'Porta-Aviões'
+        carrier = '1x Porta-Aviões'
         n_carrier = ('5' + ' ' * 2) * 5
         print(f'{n_carrier:>34}{simbol}  {carrier}')
-        battleship = 'Battleship'
+        battleship = '2x Battleship'
         n_battleship = ('4' + ' ' * 2) * 4
         print(f'{n_battleship:>34}{simbol}  {battleship}')
-        submarine = 'Submarino'
+        submarine = '3x Submarino'
         n_submarine = ('3' + ' ' * 2) * 3
         print(f'{n_submarine:>34}{simbol}  {submarine}')
-        destroyer = 'Destroyer'
+        destroyer = '4x Destroyer'
         n_destroyer = ('2' + ' ' * 2) * 2
         print(f'{n_destroyer:>34}{simbol}  {destroyer}')
-        motorboat = 'Lancha'
+        motorboat = '5x Lancha'
         n_motorboat = '1' + ' ' * 2
         print(f'{n_motorboat:>34}{simbol}  {motorboat}')
         print('=' * 69)
@@ -50,11 +52,12 @@ class Game():
         '''Render intro and get player name.'''
         # TITLE AND DESCRIPTION:
         self.render_title()
+        self.render_subtitles()
         print(GAME_DESCRIPTION)
         print('=' * 69)
         # PLAYER NAME:
-        self.player.name = input('\033[34mNOME DO JOGADOR: \033[30;44m')
-        print('\033[m')
+        self.player.name = input(COLOR_WATER + 'NOME DO JOGADOR: ' + COLOR_INPUT)
+        print(COLOR_RESET)
 
     def render_map_generator(self) -> None:
         '''Render player map generation.'''
@@ -63,6 +66,7 @@ class Game():
         while not is_selected:
             # MAP AND OPTIONS:
             self.render_title()
+            self.render_subtitles()
             self.player.ships_map.render()
             print(COLOR_TEXT + '=' * 69)
             print(' 1 - Iniciar jogo')
@@ -73,10 +77,11 @@ class Game():
             if error != '':
                 error = COLOR_FAIL + 'ERRO: ' + error
                 print(f'{error:^69}')
+                error = ''
                 print(COLOR_TEXT + '=' * 69)
             # VERIFY OPTION:
-            option = input('\033[34mDIGITE O NUMERO DA OPÇÃO: \033[30;44m')
-            print('\033[m')
+            option = input(COLOR_WATER + 'DIGITE O NUMERO DA OPÇÃO: ' + COLOR_INPUT)
+            print(COLOR_RESET)
             option = option.replace(' ', '')
             if option == '1':
                 is_selected = True
@@ -87,6 +92,8 @@ class Game():
                 error = ''
             elif option == '3':
                 self.is_running = False
+                is_selected = True
+                error = ''
             else:
                 error = 'Digite apenas o numero da opção escolhida.'
 
@@ -119,6 +126,7 @@ class Game():
         while self.is_running:
             # RENDER:
             self.render_title()
+            self.render_subtitles()
             self.render_maps()
             self.score.render()
             # PLAYER TURN:
@@ -142,7 +150,11 @@ class Game():
                     # ADD TO SHOTS LIST:
                     if shot not in self.player.shots:
                         self.player.shots.append(shot)
-                    # Realizar disparo.
+                    # SHOT:
+                    target_content = self.bot.ships_map.create_target_content(shot)
+                    self.player.hits_map.replace_target(shot, target_content)
+                    if self.bot.ships_map.bg_char_water not in target_content:
+                        self.score.hit(self.bot.name)
                 elif shot == '0':
                     self.is_running = False
                 else:
@@ -164,6 +176,8 @@ class Game():
                 self.bot.hits_map.replace_target(shot, target_content)
                 if self.player.ships_map.bg_char_water not in target_content:
                     self.score.hit(self.player.name)
+                ships_content = self.player.ships_map.create_target_content(shot)
+                self.player.ships_map.replace_target(shot, ships_content)
             # CHANGE TURN:
             if error == '':
                 self.score.change_turn()

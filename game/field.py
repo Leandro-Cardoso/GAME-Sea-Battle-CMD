@@ -9,7 +9,7 @@ class Field():
         self.columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
         self.lines = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
         self.bg_char = COLOR_WATER + '-'
-        self.bg_char_water = COLOR_FAIL + 'X'
+        self.bg_char_water = COLOR_FAIL + '~'
         self.ships = {
             'carrier' : 5,
             'battleship' : 4,
@@ -32,8 +32,8 @@ class Field():
         '''Replace target content.'''
         # GET INDEX:
         index_list = self.get_target_index(target)
-        i_column = index_list[0]
-        i_line = index_list[1]
+        i_column = index_list[1]
+        i_line = index_list[0]
         # REPLACE:
         self.table[i_column][i_line] = target_content
 
@@ -41,8 +41,8 @@ class Field():
         '''Create target content to replace.'''
         # GET INDEX:
         index_list = self.get_target_index(target)
-        i_column = index_list[0]
-        i_line = index_list[1]
+        i_column = index_list[1]
+        i_line = index_list[0]
         # IS WATER:
         if self.bg_char in self.table[i_column][i_line]:
             return COLOR_FAIL + self.bg_char_water + ' ' * self.col_space
