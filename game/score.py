@@ -52,7 +52,3 @@ class Score():
         player_score = f'Pontos: {self.player_score}'
         print(f'{player_score:<33} | Pontos: {self.bot_score}')
         print('=' * 69)
-        # TURN:
-        turn = f'É a vez de {self.turn}...'
-        print(f'{turn:^69}')
-        print('=' * 69)

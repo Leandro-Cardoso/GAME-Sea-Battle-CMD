@@ -6,7 +6,7 @@ from score import Score
 from player import Player
 
 from config import GAME_TITLE, GAME_DESCRIPTION
-from config import COLOR_TEXT, COLOR_WATER, COLOR_INPUT, COLOR_RESET, COLOR_FAIL
+from config import COLOR_TEXT, COLOR_WATER, COLOR_INPUT, COLOR_RESET, COLOR_FAIL, COLOR_SUCCESS
 
 class Game():
     '''Create game file.'''
@@ -122,6 +122,8 @@ class Game():
         # CREATE SCORE BOARD:
         self.score = Score(player_name = self.player.name, bot_name = self.bot.name)
         # START MATCH:
+        player_feedback = ''
+        bot_feedback = ''
         error = ''
         while self.is_running:
             # RENDER:
@@ -131,14 +133,21 @@ class Game():
             self.score.render()
             # PLAYER TURN:
             if self.score.turn == self.player.name:
+                # RENDER FEEDBACK:
+                if player_feedback != '' or bot_feedback != '':
+                    print(f'{player_feedback:^69}')
+                    print(f'{bot_feedback:^69}')
+                    print(COLOR_TEXT + '=' * 69)
+                    player_feedback = ''
+                    bot_feedback = ''
                 # RENDER ERROR:
                 if error != '':
                     error = COLOR_FAIL + 'ERRO: ' + error
                     print(f'{error:^69}')
                     error = ''
                 # VALIDATE SHOT:
-                shot = input('\033[34mDIGITE O ALVO DO DISPARO: \033[30;44m')
-                print('\033[m')
+                shot = input(COLOR_WATER + 'DIGITE O ALVO DO DISPARO: ' + COLOR_INPUT)
+                print(COLOR_RESET)
                 shot = shot.upper()
                 shot = shot.replace(' ', '')
                 if shot[0] in self.player.hits_map.lines:
@@ -155,6 +164,10 @@ class Game():
                     self.player.hits_map.replace_target(shot, target_content)
                     if self.bot.ships_map.bg_char_water not in target_content:
                         self.score.hit(self.bot.name)
+                        # FEEDBACK:
+                        player_feedback = f'{COLOR_SUCCESS}{self.player.name}: {shot} - Acertou um navio !!!'
+                    else:
+                        player_feedback = f'{COLOR_TEXT}{self.player.name}: {shot} - Errou o alvo !!!'
                 elif shot == '0':
                     self.is_running = False
                 else:
@@ -174,10 +187,13 @@ class Game():
                 # SHOT:
                 target_content = self.player.ships_map.create_target_content(shot)
                 self.bot.hits_map.replace_target(shot, target_content)
+                self.player.ships_map.replace_target(shot, target_content)
                 if self.player.ships_map.bg_char_water not in target_content:
                     self.score.hit(self.player.name)
-                ships_content = self.player.ships_map.create_target_content(shot)
-                self.player.ships_map.replace_target(shot, ships_content)
+                    # FEEDBACK:
+                    bot_feedback = f'{COLOR_FAIL}{self.bot.name}: {shot} - Acertou um navio !!!'
+                else:
+                    bot_feedback = f'{COLOR_TEXT}{self.bot.name}: {shot} - Errou o alvo !!!'
             # CHANGE TURN:
             if error == '':
                 self.score.change_turn()
@@ -190,7 +206,7 @@ class Game():
         # Adicionar trilha sonora (função asinc).
 
         # RESET COLORS:
-        print('\033[m')
+        print(COLOR_RESET)
 
 seabattle = Game()
 seabattle.run()
