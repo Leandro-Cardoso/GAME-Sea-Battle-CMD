@@ -304,6 +304,7 @@ class Game():
         # Pegar som de derrota.
         # Adicionar efeitos sonoros.
         # Adicionar trilha sonora (função asinc).
+        # Criar executável.
 
         # RESET COLORS:
         print(COLOR_RESET)
