@@ -102,6 +102,99 @@ class Game():
         for i, line in enumerate(self.player.ships_map.table):
             print(''.join(line) + COLOR_TEXT + '|' + (' ' * 2) + ''.join(self.player.hits_map.table[i]))
 
+    def new_game(self) -> None:
+        '''New game.'''
+        # RESET SCORE BOARD:
+        self.score.player_life = 100
+        self.score.bot_life = 100
+        self.score.turn = self.score.player_name
+        # RESET PLAYER FIELD:
+        self.player.hits_map = Field()
+        self.player.ships_map = Field()
+        self.player.ships_map.generate_ships()
+        # RESET BOT FIELD:
+        self.bot.hits_map = Field()
+        self.bot.ships_map = Field()
+        self.bot.ships_map.generate_ships()
+
+    def render_victory(self) -> None:
+        '''Render victory.'''
+        error = ''
+        is_selected = False
+        while not is_selected:
+            # RENDER TITLE:
+            self.render_title()
+            # RENDER VICTORY MSG:
+            msg = f'{self.player.name} venceu !!!'
+            print(f'{COLOR_SUCCESS}{msg:^69}')
+            msg = 'Parabéns !!!'
+            print(f'{msg:^69}')
+            # RENDER SCORE:
+            self.score.render()
+            # RENDER OPTIONS:
+            print(' 1 - Continuar jogando')
+            print(' 2 - Sair do jogo')
+            print('=' * 69)
+            # RENDER ERROR:
+            if error != '':
+                error = COLOR_FAIL + 'ERRO: ' + error
+                print(f'{error:^69}')
+                error = ''
+                print(COLOR_TEXT + '=' * 69)
+            # VERIFY OPTION:
+            option = input(COLOR_WATER + 'DIGITE O NUMERO DA OPÇÃO: ' + COLOR_INPUT)
+            print(COLOR_RESET)
+            option = option.replace(' ', '')
+            if option == '1':
+                self.new_game()
+                is_selected = True
+                error = ''
+            elif option == '2':
+                self.is_running = False
+                is_selected = True
+                error = ''
+            else:
+                error = 'Digite apenas o numero da opção escolhida.'
+
+    def render_defeat(self) -> None:
+        '''Render defeat.'''
+        error = ''
+        is_selected = False
+        while not is_selected:
+            # RENDER TITLE:
+            self.render_title()
+            # RENDER DEFEAT MSG:
+            msg = f'{self.player.name} perdeu !!!'
+            print(f'{COLOR_FAIL}{msg:^69}')
+            msg = 'Tente novamente ...'
+            print(f'{msg:^69}')
+            # RENDER SCORE:
+            self.score.render()
+            # RENDER OPTIONS:
+            print(' 1 - Continuar jogando')
+            print(' 2 - Sair do jogo')
+            print('=' * 69)
+            # RENDER ERROR:
+            if error != '':
+                error = COLOR_FAIL + 'ERRO: ' + error
+                print(f'{error:^69}')
+                error = ''
+                print(COLOR_TEXT + '=' * 69)
+            # VERIFY OPTION:
+            option = input(COLOR_WATER + 'DIGITE O NUMERO DA OPÇÃO: ' + COLOR_INPUT)
+            print(COLOR_RESET)
+            option = option.replace(' ', '')
+            if option == '1':
+                self.new_game()
+                is_selected = True
+                error = ''
+            elif option == '2':
+                self.is_running = False
+                is_selected = True
+                error = ''
+            else:
+                error = 'Digite apenas o numero da opção escolhida.'
+
     def run(self) -> None:
         '''Run game.'''
         self.is_running = True
@@ -150,24 +243,27 @@ class Game():
                 print(COLOR_RESET)
                 shot = shot.upper()
                 shot = shot.replace(' ', '')
-                if shot[0] in self.player.hits_map.lines:
+                if shot[0] in self.player.hits_map.lines and not len(shot) == 1:
                     if len(shot) == 3 and shot[0] + shot[1] == '10':
                         shot = shot[2] + shot[0] + shot[1]
                     else:
                         shot = shot[1] + shot[0]
-                if shot[0] in self.player.hits_map.columns and shot[1] in self.player.hits_map.lines and len(shot) == 2 or len(shot) == 3 and shot[1] + shot[2] == '10':
-                    # ADD TO SHOTS LIST:
-                    if shot not in self.player.shots:
-                        self.player.shots.append(shot)
+                if len(shot) == 1:
+                    error = 'Responda apenas com uma letra e um numero.'
+                elif shot[0] in self.player.hits_map.columns and shot[1] in self.player.hits_map.lines and len(shot) == 2 or len(shot) == 3 and shot[1] + shot[2] == '10':
                     # SHOT:
                     target_content = self.bot.ships_map.create_target_content(shot)
                     self.player.hits_map.replace_target(shot, target_content)
                     if self.bot.ships_map.bg_char_water not in target_content:
-                        self.score.hit(self.bot.name)
+                        if shot not in self.player.shots:
+                            self.score.hit(self.bot.name)
                         # FEEDBACK:
                         player_feedback = f'{COLOR_SUCCESS}{self.player.name}: {shot} - Acertou um navio !!!'
                     else:
                         player_feedback = f'{COLOR_TEXT}{self.player.name}: {shot} - Errou o alvo !!!'
+                    # ADD TO SHOTS LIST:
+                    if shot not in self.player.shots:
+                        self.player.shots.append(shot)
                 elif shot == '0':
                     self.is_running = False
                 else:
@@ -180,28 +276,32 @@ class Game():
                     column = choice(self.bot.hits_map.columns)
                     line = choice(self.bot.hits_map.lines)
                     shot = column + line
-                    # ADD TO SHOTS LIST:
                     if shot not in self.bot.shots:
-                        self.bot.shots.append(shot)
                         is_valid_shot = True
                 # SHOT:
                 target_content = self.player.ships_map.create_target_content(shot)
                 self.bot.hits_map.replace_target(shot, target_content)
                 self.player.ships_map.replace_target(shot, target_content)
                 if self.player.ships_map.bg_char_water not in target_content:
-                    self.score.hit(self.player.name)
+                    if shot not in self.bot.shots:
+                        self.score.hit(self.player.name)
                     # FEEDBACK:
                     bot_feedback = f'{COLOR_FAIL}{self.bot.name}: {shot} - Acertou um navio !!!'
                 else:
                     bot_feedback = f'{COLOR_TEXT}{self.bot.name}: {shot} - Errou o alvo !!!'
+                # ADD TO SHOTS LIST:
+                self.bot.shots.append(shot)
             # CHANGE TURN:
             if error == '':
                 self.score.change_turn()
-            # Verificar vitória ou derrota.
-            # Tela de vitória.
-            # Tela de derrota (pegar som de derrota).
-            # /\ Com opção continuar ou não.
+            # VICTORY:
+            if self.score.bot_life == 0:
+                self.render_victory()
+            # DEFEAT:
+            elif self.score.player_life == 0:
+                self.render_defeat()
 
+        # Pegar som de derrota.
         # Adicionar efeitos sonoros.
         # Adicionar trilha sonora (função asinc).
 
