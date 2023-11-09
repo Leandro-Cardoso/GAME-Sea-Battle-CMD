@@ -19,10 +19,10 @@ class Score():
         else:
             self.turn = self.player_name
 
-    def hit(self, target:str = 'Bot') -> None:
+    def hit(self, target_name:str = 'Bot') -> None:
         '''Ship hit.'''
         hit = 100 / self.total_hits
-        if target == self.player_name:
+        if target_name == self.player_name:
             self.player_life -= hit
             if self.player_life <= 0:
                 self.player_life = 0

@@ -19,15 +19,38 @@ class Field():
         }
         self.table = self.create_table()
 
-    def shot(self, shot:str) -> str:
-        '''Shot.'''
-        i_column = self.columns.index(shot[0]) + 1
-        if len(shot) == 2:
-            i_line = self.lines.index(shot[1]) + 1
+    def get_target_index(self, target:str) -> list:
+        '''Get shot index list.'''
+        i_column = self.columns.index(target[0]) + 1
+        if len(target) == 2:
+            i_line = self.lines.index(target[1]) + 1
         else:
-            i_line = self.lines.index(shot[1] + shot[2]) + 1
-        if self.table[i_column][i_line] == self.bg_char:
-            return self.bg_char_water
+            i_line = self.lines.index(target[1] + target[2]) + 1
+        return [i_column, i_line]
+
+    def replace_target(self, target:str, target_content:str) -> None:
+        '''Replace target content.'''
+        # GET INDEX:
+        index_list = self.get_target_index(target)
+        i_column = index_list[0]
+        i_line = index_list[1]
+        # REPLACE:
+        self.table[i_column][i_line] = target_content
+
+    def create_target_content(self, target:str) -> str:
+        '''Create target content to replace.'''
+        # GET INDEX:
+        index_list = self.get_target_index(target)
+        i_column = index_list[0]
+        i_line = index_list[1]
+        # IS WATER:
+        if self.bg_char in self.table[i_column][i_line]:
+            return COLOR_FAIL + self.bg_char_water + ' ' * self.col_space
+        # IS SHIP:
+        else:
+            for ship_name in list(self.ships):
+                if COLOR_SHIP + str(self.ships[ship_name]) in self.table[i_column][i_line]:
+                    return COLOR_FAIL + str(self.ships[ship_name]) + ' ' * self.col_space
 
     def generate_ships(self) -> None:
         '''Generate ships'''
@@ -58,11 +81,11 @@ class Field():
                             is_set_ship_position = False
                 # SET POSITION:
                 for j in range(size):
-                    replace = COLOR_SHIP + str(self.ships[ship_name])
+                    replace = COLOR_SHIP + str(self.ships[ship_name]) + ' ' * self.col_space
                     if orientation == 'vertical':
-                        self.table[i_line + j][i_column] = str(self.table[i_line + j][i_column]).replace(self.bg_char, replace)
+                        self.table[i_line + j][i_column] = replace
                     else:
-                        self.table[i_line][i_column + j] = str(self.table[i_line][i_column + j]).replace(self.bg_char, replace)
+                        self.table[i_line][i_column + j] = replace
 
     def create_table(self) -> list:
         '''Create table.'''

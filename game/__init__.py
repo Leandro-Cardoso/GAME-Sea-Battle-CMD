@@ -127,6 +127,7 @@ class Game():
                 if error != '':
                     error = COLOR_FAIL + 'ERRO: ' + error
                     print(f'{error:^69}')
+                    error = ''
                 # VALIDATE SHOT:
                 shot = input('\033[34mDIGITE O ALVO DO DISPARO: \033[30;44m')
                 print('\033[m')
@@ -159,8 +160,13 @@ class Game():
                         self.bot.shots.append(shot)
                         is_valid_shot = True
                 # SHOT:
+                target_content = self.player.ships_map.create_target_content(shot)
+                self.bot.hits_map.replace_target(shot, target_content)
+                if self.player.ships_map.bg_char_water not in target_content:
+                    self.score.hit(self.player.name)
             # CHANGE TURN:
-            self.score.change_turn()
+            if error == '':
+                self.score.change_turn()
             # Verificar vitória ou derrota.
             # Tela de vitória.
             # Tela de derrota (pegar som de derrota).
