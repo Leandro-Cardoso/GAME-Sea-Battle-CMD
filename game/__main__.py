@@ -335,14 +335,10 @@ class Game():
             # DEFEAT:
             elif self.score.player_life == 0:
                 self.render_defeat()
-
-        # Criar executável.
-        # Finalizar README.
-
         # RESET COLORS:
         print(COLOR_RESET)
 
-pygame.init() # Music and SFX
+pygame.mixer.init() # Music and SFX
 pygame.mixer.music.load(GAME_SFX_PATH + 'music-loop-8-bit.wav')
 seabattle = Game()
 seabattle.run()

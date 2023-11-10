@@ -20,7 +20,9 @@ Esse projeto foi desenvolvido como trabalho da Universidade de Vassouras, curso 
 </p>
 
 ### ⚙️ Tecnologias:
-* Python
+* Python 3.7.9
+* Pygame 2.5.2 (Apenas musicas e efeitos sonoros)
+* Pyinstaller 5.13.2 (Gerar executável)
 
 ### ⚙️ Development:
 1. ... ⚙️✔️🔨
